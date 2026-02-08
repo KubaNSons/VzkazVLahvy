@@ -1,0 +1,71 @@
+:: StoryTitle
+Vzkaz
+
+
+:: StoryData
+{
+  "ifid": "D4BEDAC1-E12C-4D4E-9ABC-E4046FD6C9C8",
+  "format": "SugarCube",
+  "format-version": "2.37.3",
+  "start": "Intro",
+  "zoom": 1
+}
+
+
+:: Intro {"position":"1075,600","size":"100,100"}
+Probudil ses na plazi. Nevis co se stalo.
+[[Rozhlednu se->Plaz]]
+
+
+:: Les {"position":"1275,775","size":"100,100"}
+<<set $maKlacek = true>>
+
+V lese jsi našel dlouhý smrkový klacek. To by se mohlo hodit.
+
+
+
+:: Plaz {"position":"1275,600","size":"100,100"}
+Nachazis se na liduprazdne plazi.
+Kousek od tebe je rákosí. Za pláží začíná les. Nedaleko slyšíš, jak se voda tříští o strašlivé útesy.
+[[Rakosi]] 
+[[Utesy]]
+[[Pujdu do Lesa->Les]]
+
+
+
+:: Rakosi {"position":"1800,450","size":"100,100"}
+Prohledas rakosi.
+
+
+:: Skocim do vody {"position":"2000,850","size":"100,100"}
+
+
+
+:: StoryCaption {"position":"1075,300","size":"100,100"}
+''HP:'' $hp/$maxHp
+''Síla:'' $sila
+''Obratnost:'' $obratnost
+''Zlato:'' $zlato
+
+
+:: StoryInit {"position":"1075,450","size":"100,100"}
+<<set $hp = 10>>
+<<set $maxHp = 10>>
+<<set $sila = 2>>
+<<set $utok = 1>>
+<<set $obratnost = 2>>
+<<set $zlato = 0>>
+
+
+:: Utesy {"position":"1825,700","size":"100,100"}
+Prohledáváš útesy, když tu najednou pod vodou zahlédneš něco, co vydává slabou záři.
+
+[[Skocim do vody]]
+[[Pujdu se porozhlednout po necem cim bych to mohl vytahnout.->Les]]
+[[Radši se vrátím->Plaz]]
+
+I
+
+
+:: StoryScript [script]
+Config.history.maxStates = 1;
