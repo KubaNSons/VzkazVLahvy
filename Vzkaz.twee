@@ -8,11 +8,14 @@ Vzkaz
   "format": "SugarCube",
   "format-version": "2.37.3",
   "start": "Intro",
+  "tag-colors": {
+    "nohud": "blue"
+  },
   "zoom": 1
 }
 
 
-:: GameOver {"position":"900,1375","size":"100,100"}
+:: GameOver {"position":"875,1400","size":"100,100"}
 💀 Jsi mrtvý. 💀
 
 
@@ -35,9 +38,8 @@ GAME OVER
 [[🏝️ Radši se vrátím na plaz->Plaz]]
 
 
-:: Intro {"position":"800,600","size":"100,100"}
+:: Intro [nohud] {"position":"800,600","size":"100,100"}
 \:: Intro
-
 <div class="title-screen">
 	<h1>Vzkaz v lahvi</h1>
   
@@ -50,15 +52,14 @@ GAME OVER
 
 :: Les {"position":"1275,775","size":"100,100"}
 
-
 Jdeš do lesa. V dálce skrze stromy prosvítá světlo.
 <<if !$maKlacek and $bylNaUtesech>>
 	V lese jsi našel dlouhý smrkový klacek. To by se mohlo hodit.
 <</if>>
-<<if $bylNaUtesech>>
-	[[Vratim se na utesy->Utesy]]
+<<if $bylNaUtesech and !$maLahev>>
+	[[🌊 Vrátím se na útesy->Utesy]]
 <</if>>
-[[Jdu dal->Most]]
+[[➡️ Jdu dál->Most]]
 
 <<set $maKlacek = true>>
 
@@ -80,6 +81,13 @@ U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správ
 [[🏝️ Jdu zpátky na plaz->Plaz]]
 
 
+:: PassageHeader {"position":"800,225","size":"100,100"}
+<<if !tags().includes("nohud")>>
+<div id="hud" class="hud"><<HUD>></div>
+</div>
+<</if>>
+
+
 :: Plaz {"position":"1200,600","size":"100,100"}
 
 🏝️ Nacházíš se na liduprázdné pláži.
@@ -96,6 +104,16 @@ U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správ
 [[🌲 Půjdu do lesa->Les]]
 
 
+:: PrazdneUtesy {"position":"2000,600","size":"100,100"}
+
+🌊 Prohledáváš útesy, ale nic už tu není.
+
+
+[[Vrátím se->Plaz]]
+
+<<set $bylNaUtesech = true>>
+
+
 :: Rakosi {"position":"1800,450","size":"100,100"}
 
 🌾 Prohledáš rákosí.
@@ -107,28 +125,35 @@ Našel jsi zombie labuť s mláďaty.
 
 [[🏝️ Plaz->Plaz]] 
 
-<<set $hp -=1>>
+<<MinusZivot>>
 <<set $bylVRakosi = true>>
+
 
 
 
 :: RunaDobre {"position":"1175,1275","size":"100,100"}
 Úspěch!!
-Brána hradu se s rachotem otevřela!
+
+<div class="title-screen">
+	<h1>🏆 Vyhrál jsi! 🏆</h1>
+ 	<h2>
+    Brána hradu se s rachotem otevřela!
+    Zachránil ses z útesů a odhalil tajemství hradu.
+    </h2> 
+    <<button "Hrát znovu">>
+    	<<audio "victory" stop>>
+		<<run Engine.restart()>>
+	<</button>>
+</div>
+
+<<audio "epic" stop>>
+<<audio "victory" play loop volume 1>>
 
 
-🏆 Vyhrál jsi!
 
-Zachránil ses z útesů a odhalil tajemství hradu.
-
-<<button "Hrát znovu">>
-	<<run Engine.restart()>>
-<</button>>
-
-
-:: RunaSpatne {"position":"900,1250","size":"100,100"}
+:: RunaSpatne {"position":"875,1250","size":"100,100"}
 💥 Strašlivá bolest projela celým tvým tělem.
-<<set $hp -= 1>>
+<<MinusZivot>>
 
 <<if $hp <= 0>>
   [[Konec->GameOver]]
@@ -147,23 +172,39 @@ Byla ale mnohem hlouběji, než sis myslel.
 [[👀 Otevřu ji->Otevru ji]]
 [[🏝️ Radsi ji hodim zpatky a jdu na plaz->Plaz]]
 
-<<set $hp -=1>>
+<<MinusZivot>>
 
-
-:: StoryCaption {"position":"800,475","size":"100,100"}
-''Životy:'' $hp/$maxHp
-
+<<set $maLahev=true>>
 
 
 :: StoryInit {"position":"800,350","size":"100,100"}
 <<cacheaudio "epic" "audio/EpicDnD.mp3">>
+<<cacheaudio "victory" "audio/Victory.mp3">>
 
 <<set $hp = 3>>
 <<set $maxHp = 3>>
 
+<<widget "HUD">> ŽIVOTY: <<print "❤️".repeat($hp) + "🤍".repeat($maxHp - $hp)>>
+<</widget>>
+
+
+<<widget "MinusZivot">>
+	<<set _n = (_args.length ? Number(_args[0]) : 1)>>
+	<<if isNaN(_n) or _n <= 0>><<set _n = 1>><</if>>
+
+	<<set $hp = Math.max(0, $hp - _n)>>
+
+	<<timed 0ms>>
+		<<replace "#hud">><<HUD>><</replace>>
+	<</timed>>
+
+	<<if $hp <= 0>>
+		<<goto "GameOver">>
+	<</if>>
+<</widget>>
+
 
 :: Utesy {"position":"1800,625","size":"100,100"}
-
 🌊 Prohledáváš útesy, když tu najednou pod vodou zahlédneš něco, co vydává slabou záři.
 
 [[Skocim do vody]]
@@ -178,12 +219,19 @@ Byla ale mnohem hlouběji, než sis myslel.
 <<set $bylNaUtesech = true>>
 
 
+<<if $maLahev>>
+  <<goto "PrazdneUtesy">>
+<</if>>
+
+
+
 :: Vzkaz {"position":"1800,850","size":"100,100"}
 Držíš v ruce magicky vypadající láhev. Vydává mdle světlo.
 
 [[👀 Otevřu ji->Otevru ji]]
 [[🏝️ Radši ji hodím zpátky a jdu na pláž->Plaz]]
 
+<<set $maLahev=true>>
 
 
 :: Zacit Hru {"position":"1000,600","size":"100,100"}
@@ -209,7 +257,6 @@ h1, h2, h3 {
 }
 
 h1, h2 {
-  font-family: 'Cinzel', serif;
   color: #e6d3a3;
   text-shadow: 0 0 6px rgba(0,0,0,0.6);
 }
@@ -235,14 +282,71 @@ h1, h2 {
   max-width: 38rem;
 }
 
-/* větší všeobecný text */
-html { font-size: 20px; }   /* zkus 18–22px */
+/* ✅ Responsivní základní velikost písma */
+html { font-size: 20px; }      /* desktop default */
 body { font-size: 1rem; }
 
-#ui-bar, #story {
-  zoom: 1.15;   /* 1.0 = normál, 1.2 = větší */
+/* ✅ Přestaň zvětšovat UI globálně – to rozbije mobil */
+#ui-bar, #story { zoom: 1; }
+
+/* ✅ Tablet */
+@media (max-width: 900px) {
+  html { font-size: 18px; }
+  .title { font-size: 2.4rem; }
+  .subtitle { font-size: 1rem; max-width: 30rem; }
 }
 
-/*#passages {
+/* ✅ Mobil */
+@media (max-width: 600px) {
+  html { font-size: 16px; }
+  .title { font-size: 2rem; }
+  .subtitle { font-size: 0.95rem; max-width: 24rem; }
+}
+
+/* ✅ Extra malý mobil */
+@media (max-width: 380px) {
+  html { font-size: 15px; }
+  .title { font-size: 1.8rem; }
+}
+
+
+
+
+/* Schovej sidebar */
+#ui-bar, #ui-bar-toggle { 
+  display: none !important; 
+}
+
+/* Zruš odsazení příběhu, které sidebar normálně zabírá */
+#story {
+  margin-left: 0 !important;
+}
+
+.hud {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  
+  opacity: 0.7;
+
+  display: flex;
+  justify-content: center;
+
+  padding: 0.5rem 0.75rem;
+  margin: 0 0 0.75rem 0;
+
+  font-size: 0.75rem;
   text-align: center;
-}*/
+
+  background: rgba(0,0,0,0.65);
+  /*
+  border: 1px solid rgba(230,211,163,0.35);
+  border-radius: 999px;
+  */
+  backdrop-filter: blur(6px);
+}
+
+
+
+
+
