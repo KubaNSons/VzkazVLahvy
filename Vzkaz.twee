@@ -7,7 +7,7 @@ Vzkaz
   "ifid": "D4BEDAC1-E12C-4D4E-9ABC-E4046FD6C9C8",
   "format": "SugarCube",
   "format-version": "2.37.3",
-  "start": "Intro",
+  "start": "InitSettings",
   "tag-colors": {
     "nohud": "blue"
   },
@@ -38,14 +38,29 @@ GAME OVER
 [[🏝️ Radši se vrátím na plaz->Plaz]]
 
 
-:: Intro [nohud] {"position":"800,600","size":"100,100"}
+:: InitSettings [nohud] {"position":"525,600","size":"100,100"}
 \:: Intro
 <div class="title-screen">
 	<h1>Vzkaz v lahvi</h1>
   
-  <<button "Začít hru">>
-    <<goto "Zacit Hru">>
-  <</button>>
+ 	<<button "🖥️ Cela obrazovka">>
+  		<<run GoFullscreen()>>
+        <<goto "Intro">>
+	<</button>>
+</div>
+
+
+
+:: Intro [nohud] {"position":"675,600","size":"100,100"}
+\:: Intro
+<div class="title-screen">
+	<h1>🎲 Nová  hra 🎲</h1>
+    Obtížnost:
+  	<<button "🙂 Normal">>
+    	<<goto "Zacit Hru">>	<</button>>     <<button "💀 IronMan">>
+     	<<set $hp = 1>> 
+    	<<goto "Zacit Hru">>
+	<</button>>
 </div>
 
 
@@ -84,7 +99,6 @@ U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správ
 :: PassageHeader {"position":"800,225","size":"100,100"}
 <<if !tags().includes("nohud")>>
 <div id="hud" class="hud"><<HUD>></div>
-</div>
 <</if>>
 
 
@@ -120,10 +134,8 @@ U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správ
 Našel jsi zombie labuť s mláďaty.
 
 💥 Zaútočila na tebe a ubrala ti jeden život.
-🏃 Utíkáš zpátky.
 
-
-[[🏝️ Plaz->Plaz]] 
+[[🏝️ 🏃 Utíkáš zpátky.->Plaz]] 
 
 <<MinusZivot>>
 <<set $bylVRakosi = true>>
@@ -153,13 +165,11 @@ Našel jsi zombie labuť s mláďaty.
 
 :: RunaSpatne {"position":"875,1250","size":"100,100"}
 💥 Strašlivá bolest projela celým tvým tělem.
+
 <<MinusZivot>>
 
-<<if $hp <= 0>>
-  [[Konec->GameOver]]
-<<else>>
-	[[Zkusim to znovu->Hadani]]
-<</if>>
+[[Zkusim to znovu->Hadani]]
+
 	
 
 
@@ -183,6 +193,7 @@ Byla ale mnohem hlouběji, než sis myslel.
 
 <<set $hp = 3>>
 <<set $maxHp = 3>>
+<<set $dead = false>>
 
 <<widget "HUD">> ŽIVOTY: <<print "❤️".repeat($hp) + "🤍".repeat($maxHp - $hp)>>
 <</widget>>
@@ -199,7 +210,7 @@ Byla ale mnohem hlouběji, než sis myslel.
 	<</timed>>
 
 	<<if $hp <= 0>>
-		<<goto "GameOver">>
+		<<set $dead = true>>
 	<</if>>
 <</widget>>
 
@@ -248,6 +259,49 @@ Držíš v ruce magicky vypadající láhev. Vydává mdle světlo.
 :: StoryScript [script]
 Config.history.maxStates = 1;
 
+window.GoFullscreen = function () {
+  const el = document.documentElement;
+
+  if (document.fullscreenElement) {
+    document.exitFullscreen?.();
+    return;
+  }
+
+  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+  if (req) req.call(el);
+};
+
+
+/* 1) Globální přesměrování všech interních přechodů */
+Config.navigation.override = function (passage) {
+  try {
+    if (State.getVar("$dead")) {
+      return "GameOver";
+    }
+  } catch (e) {}
+  return passage;
+};
+
+/* 2) Přejmenování všech interních odkazů, když je hráč mrtvý */
+$(document).on(":passagerender", function (ev) {
+  try {
+    if (!State.getVar("$dead")) return;
+
+    const $links = $(ev.content).find("a.link-internal");
+
+    // Změň text všech linků
+    $links.each(function () {
+      const $a = $(this);
+
+      // Pokud chceš zachovat ikonku, dej sem vlastní text
+      $a.text("☠️ Game Over");
+
+      // Volitelně: přidej CSS třídu pro styling
+      $a.addClass("dead-link");
+    });
+  } catch (e) {}
+});
+
 
 :: StoryStylesheet [stylesheet]
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap');
@@ -269,6 +323,37 @@ h1, h2 {
   align-items: center;
   gap: 1rem;
   text-align: center;
+}
+
+/* ✅ TLAČÍTKA BLÍŽ K NADPISU */
+.title-screen h1 {
+  margin: 0 0 1.0rem 0; /* zmenší mezeru pod nadpisem */
+}
+
+/* ✅ STEJNÁ ŠÍŘKA + HEZKÝ STYL PRO <<button>> */
+.title-screen button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 280px;           /* 👈 stejné široké */
+  max-width: 85vw;        /* aby to na mobilu nepřetékalo */
+  padding: 0.7rem 1rem;
+
+  margin: 0.35rem 0;      /* menší mezera mezi tlačítky */
+  font-size: 1.05rem;
+
+  cursor: pointer;
+  border: 0;
+  border-radius: 4px;
+
+  background: #3b5fc4;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.title-screen button:hover {
+  background: #4b72e0;
 }
 
 .title {
@@ -294,6 +379,8 @@ body { font-size: 1rem; }
   html { font-size: 18px; }
   .title { font-size: 2.4rem; }
   .subtitle { font-size: 1rem; max-width: 30rem; }
+
+  .title-screen button { width: 230px; } /* lehce menší */
 }
 
 /* ✅ Mobil */
@@ -301,16 +388,17 @@ body { font-size: 1rem; }
   html { font-size: 16px; }
   .title { font-size: 2rem; }
   .subtitle { font-size: 0.95rem; max-width: 24rem; }
+
+  .title-screen button { width: 220px; }
 }
 
 /* ✅ Extra malý mobil */
 @media (max-width: 380px) {
   html { font-size: 15px; }
   .title { font-size: 1.8rem; }
+
+  .title-screen button { width: 210px; }
 }
-
-
-
 
 /* Schovej sidebar */
 #ui-bar, #ui-bar-toggle { 
@@ -327,7 +415,7 @@ body { font-size: 1rem; }
   top: 0;
   z-index: 999;
   
-  opacity: 0.7;
+  opacity: 0.8;
 
   display: flex;
   justify-content: center;
@@ -338,15 +426,15 @@ body { font-size: 1rem; }
   font-size: 0.75rem;
   text-align: center;
 
-  background: rgba(0,0,0,0.65);
-  /*
-  border: 1px solid rgba(230,211,163,0.35);
+  background: rgba(0.2,0.3,0.1,0.65);
+  
+  border: 1px solid rgba(230,211,163,0.05);
   border-radius: 999px;
-  */
+  
   backdrop-filter: blur(6px);
 }
 
-
-
-
-
+.dead-link {
+  font-weight: 700;
+  text-transform: uppercase;
+}
