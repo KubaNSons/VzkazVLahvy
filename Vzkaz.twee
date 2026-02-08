@@ -12,7 +12,7 @@ Vzkaz
 }
 
 
-:: "GameOver" {"position":"1100,1375","size":"100,100"}
+:: GameOver {"position":"900,1375","size":"100,100"}
 💀 Jsi mrtvý. 💀
 
 
@@ -23,7 +23,7 @@ GAME OVER
 <</button>>
 
 
-:: Hadani {"position":"1250,1100","size":"100,100"}
+:: Hadani {"position":"1050,1075","size":"100,100"}
 📜 Starodávný nápis varuje: Když neuhodneš, poraní tě to.
 
 [[🔥 Runa ohně->RunaSpatne]]
@@ -32,19 +32,25 @@ GAME OVER
 [[🌑 Runa tmy->RunaSpatne]]
 
 
+[[🏝️ Radši se vrátím na plaz->Plaz]]
+
+
 :: Intro {"position":"800,600","size":"100,100"}
-Vzkaz v lahvy
+\:: Intro
 
-[[Zacit hru->Zacit Hru]]
-
-<<set $hp = 3>>
-<<set $maxHp = 3>>
-
-
+<div class="title-screen">
+	<h1>Vzkaz v lahvi</h1>
+  
+  <<button "Začít hru">>
+    <<goto "Zacit Hru">>
+  <</button>>
+</div>
 
 
 
 :: Les {"position":"1275,775","size":"100,100"}
+
+
 Jdeš do lesa. V dálce skrze stromy prosvítá světlo.
 <<if !$maKlacek and $bylNaUtesech>>
 	V lese jsi našel dlouhý smrkový klacek. To by se mohlo hodit.
@@ -57,36 +63,42 @@ Jdeš do lesa. V dálce skrze stromy prosvítá světlo.
 <<set $maKlacek = true>>
 
 
-:: Most {"position":"1250,950","size":"100,100"}
-🏰 Za lesem spatříš mohutný hrad. U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správné runy dovnitř nevejdeš.
+:: Most {"position":"1175,950","size":"100,100"}
 
-[[Zkusím uhodnout správnou runu->Hadani]]
+🏰 Za lesem spatříš mohutný hrad. 
+U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správné runy dovnitř nevejdeš.
+
+[[🎲 Zkusím uhodnout správnou runu->Hadani]]
+
+[[🏝️ Radši se vrátím na plaz->Plaz]]
 
 
 :: Otevru ji {"position":"1800,1000","size":"100,100"}
-Vevnitr jsi nasel stary pergamen se vzkazem:
-"Nikdy nevybirej Runu Slunce ani Runu Tmy"
+📜 Uvnitř jsi našel starý pergamen se vzkazem:
+„Nikdy nevybírej Runu slunce ani Runu tmy.“
 
-[[Plaz]] 
+[[🏝️ Jdu zpátky na plaz->Plaz]]
 
 
 :: Plaz {"position":"1200,600","size":"100,100"}
-Nacházíš se na liduprázdné pláži.
 
-🌾 Kousek od tebe je rákosí.
-🌲 Za pláží začíná les.
-🌊 Nedaleko slyšíš, jak se voda tříští o strašlivé útesy.
+🏝️ Nacházíš se na liduprázdné pláži.
+
+ Kousek od tebe je rákosí.
+ Za pláží začíná les.
+ Nedaleko slyšíš, jak se voda tříští o strašlivé útesy.
 
 <<if !$bylVRakosi>>
-[[🌾 Rákosí->Rakosi]]
+[[🌾 Prozkoumám rákosí->Rakosi]]
 <</if>>
-[[🌊 Útesy->Utesy]]
+[[🌊 Prohledám útesy->Utesy]]
 
 [[🌲 Půjdu do lesa->Les]]
 
 
 :: Rakosi {"position":"1800,450","size":"100,100"}
-Prohledáš rákosí.
+
+🌾 Prohledáš rákosí.
 Našel jsi zombie labuť s mláďaty.
 
 💥 Zaútočila na tebe a ubrala ti jeden život.
@@ -100,7 +112,7 @@ Našel jsi zombie labuť s mláďaty.
 
 
 
-:: RunaDobre {"position":"1350,1250","size":"100,100"}
+:: RunaDobre {"position":"1175,1275","size":"100,100"}
 Úspěch!!
 Brána hradu se s rachotem otevřela!
 
@@ -114,12 +126,12 @@ Zachránil ses z útesů a odhalil tajemství hradu.
 <</button>>
 
 
-:: RunaSpatne {"position":"1100,1250","size":"100,100"}
+:: RunaSpatne {"position":"900,1250","size":"100,100"}
 💥 Strašlivá bolest projela celým tvým tělem.
 <<set $hp -= 1>>
 
 <<if $hp <= 0>>
-  [["GameOver"]]
+  [[Konec->GameOver]]
 <<else>>
 	[[Zkusim to znovu->Hadani]]
 <</if>>
@@ -132,8 +144,8 @@ Zachránil ses z útesů a odhalil tajemství hradu.
 Potopíš se hluboko do vody a vytáhneš magicky vypadající láhev. Vydává mdle světlo.
 Byla ale mnohem hlouběji, než sis myslel.
 💥 -1 život
-[[Otevru ji]]
-[[Radsi ji hodim zpatky a jdu na plaz->Plaz]]
+[[👀 Otevřu ji->Otevru ji]]
+[[🏝️ Radsi ji hodim zpatky a jdu na plaz->Plaz]]
 
 <<set $hp -=1>>
 
@@ -146,10 +158,13 @@ Byla ale mnohem hlouběji, než sis myslel.
 :: StoryInit {"position":"800,350","size":"100,100"}
 <<cacheaudio "epic" "audio/EpicDnD.mp3">>
 
+<<set $hp = 3>>
+<<set $maxHp = 3>>
+
 
 :: Utesy {"position":"1800,625","size":"100,100"}
-🌊
-Prohledáváš útesy, když tu najednou pod vodou zahlédneš něco, co vydává slabou záři.
+
+🌊 Prohledáváš útesy, když tu najednou pod vodou zahlédneš něco, co vydává slabou záři.
 
 [[Skocim do vody]]
 
@@ -166,16 +181,17 @@ Prohledáváš útesy, když tu najednou pod vodou zahlédneš něco, co vydáv�
 :: Vzkaz {"position":"1800,850","size":"100,100"}
 Držíš v ruce magicky vypadající láhev. Vydává mdle světlo.
 
-[[Otevru ji]]
-[[Radši ji hodím zpátky a jdu na pláž->Plaz]]
+[[👀 Otevřu ji->Otevru ji]]
+[[🏝️ Radši ji hodím zpátky a jdu na pláž->Plaz]]
 
 
 
 :: Zacit Hru {"position":"1000,600","size":"100,100"}
+
 🏝️ Probudil ses na pláži. Nevíš, co se stalo.
 
 
-[[Rozhlednu se->Plaz]]
+[[👀 Rozhlédnu se->Plaz]]
 
 
 <<audio "epic" play loop volume 1>>
@@ -197,3 +213,36 @@ h1, h2 {
   color: #e6d3a3;
   text-shadow: 0 0 6px rgba(0,0,0,0.6);
 }
+
+.title-screen {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  letter-spacing: 0.04em;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  max-width: 38rem;
+}
+
+/* větší všeobecný text */
+html { font-size: 20px; }   /* zkus 18–22px */
+body { font-size: 1rem; }
+
+#ui-bar, #story {
+  zoom: 1.15;   /* 1.0 = normál, 1.2 = větší */
+}
+
+/*#passages {
+  text-align: center;
+}*/
