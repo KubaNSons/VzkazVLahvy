@@ -19,8 +19,16 @@ Probudil ses na plazi. Nevis co se stalo.
 
 :: Les {"position":"1275,775","size":"100,100"}
 <<set $maKlacek = true>>
-
+Jdes do lesa.
 V lese jsi našel dlouhý smrkový klacek. To by se mohlo hodit.
+
+<<if $bylNaUtesech>>
+	[[Vratim se na utesy->Utesy]]
+
+[[Jdu dal->Most]]
+
+
+:: Most {"position":"1375,925","size":"100,100"}
 
 
 
@@ -33,8 +41,12 @@ Kousek od tebe je rákosí. Za pláží začíná les. Nedaleko slyšíš, jak s
 
 
 
+
+
 :: Rakosi {"position":"1800,450","size":"100,100"}
-Prohledas rakosi.
+Prohledas rakosi. Nasel jsi zombie labut s mladatama. Zautocila na tebe a ubrala ti jeden zivot. Utikas zpatky.
+
+[[Plaz]] 
 
 
 :: Skocim do vody {"position":"2000,850","size":"100,100"}
@@ -42,29 +54,34 @@ Prohledas rakosi.
 
 
 :: StoryCaption {"position":"1075,300","size":"100,100"}
-''HP:'' $hp/$maxHp
-''Síla:'' $sila
-''Obratnost:'' $obratnost
-''Zlato:'' $zlato
+''Životy:'' $hp/$maxHp
+
 
 
 :: StoryInit {"position":"1075,450","size":"100,100"}
-<<set $hp = 10>>
-<<set $maxHp = 10>>
-<<set $sila = 2>>
-<<set $utok = 1>>
-<<set $obratnost = 2>>
-<<set $zlato = 0>>
+<<set $hp = 3>>
+<<set $maxHp = 3>>
 
 
-:: Utesy {"position":"1825,700","size":"100,100"}
+
+:: Utesy {"position":"1800,700","size":"100,100"}
 Prohledáváš útesy, když tu najednou pod vodou zahlédneš něco, co vydává slabou záři.
 
 [[Skocim do vody]]
-[[Pujdu se porozhlednout po necem cim bych to mohl vytahnout.->Les]]
 [[Radši se vrátím->Plaz]]
 
-I
+if <<$maKlacek>>
+	[[Pouziju kacek a zkusim vytahnout záhadnou. vec->Vzkaz]]	
+<<else>>
+	[[Pujdu se porozhlednout po necem cim bych to mohl vytahnout.->Les]]	
+
+<<set $bylNaUtesech = true>>
+
+
+:: Vzkaz {"position":"1800,850","size":"100,100"}
+<<set $maVzkaz=1>>
+
+
 
 
 :: StoryScript [script]
