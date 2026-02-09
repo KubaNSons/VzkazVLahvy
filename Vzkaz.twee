@@ -30,8 +30,11 @@ GAME OVER
 📜 Starodávný nápis varuje: Když neuhodneš, poraní tě to.
 
 [[🔥 Runa ohně->RunaSpatne]]
+
 [[☀️ Runa slunce->RunaSpatne]]
+
 [[💨 Runa vzduchu->RunaDobre]]
+
 [[🌑 Runa tmy->RunaSpatne]]
 
 
@@ -144,15 +147,12 @@ Našel jsi zombie labuť s mláďaty.
 
 
 :: RunaDobre {"position":"1175,1275","size":"100,100"}
-Úspěch!!
-
 <div class="title-screen">
 	<h1>🏆 Vyhrál jsi! 🏆</h1>
  	<h2>
     Brána hradu se s rachotem otevřela!
     Zachránil ses z útesů a odhalil tajemství hradu.
-    </h2> 
-    <<button "Hrát znovu">>
+    </h2>     <<button "Hlavní obrazovka">>
     	<<audio "victory" stop>>
 		<<run Engine.restart()>>
 	<</button>>
@@ -180,6 +180,7 @@ Potopíš se hluboko do vody a vytáhneš magicky vypadající láhev. Vydává 
 Byla ale mnohem hlouběji, než sis myslel.
 💥 -1 život
 [[👀 Otevřu ji->Otevru ji]]
+
 [[🏝️ Radsi ji hodim zpatky a jdu na plaz->Plaz]]
 
 <<MinusZivot>>
@@ -240,6 +241,7 @@ Byla ale mnohem hlouběji, než sis myslel.
 Držíš v ruce magicky vypadající láhev. Vydává mdle světlo.
 
 [[👀 Otevřu ji->Otevru ji]]
+
 [[🏝️ Radši ji hodím zpátky a jdu na pláž->Plaz]]
 
 <<set $maLahev=true>>

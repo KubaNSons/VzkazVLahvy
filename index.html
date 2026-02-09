@@ -334,6 +334,7 @@ Našel jsi zombie labuť s mláďaty.
 Byla ale mnohem hlouběji, než sis myslel.
 💥 -1 život
 [[👀 Otevřu ji-&gt;Otevru ji]]
+
 [[🏝️ Radsi ji hodim zpatky a jdu na plaz-&gt;Plaz]]
 
 &lt;&lt;MinusZivot&gt;&gt;
@@ -367,6 +368,7 @@ U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správ
 [[🏝️ Radši se vrátím na plaz-&gt;Plaz]]</tw-passagedata><tw-passagedata pid="8" name="Vzkaz" tags="" position="1800,850" size="100,100">Držíš v ruce magicky vypadající láhev. Vydává mdle světlo.
 
 [[👀 Otevřu ji-&gt;Otevru ji]]
+
 [[🏝️ Radši ji hodím zpátky a jdu na pláž-&gt;Plaz]]
 
 &lt;&lt;set $maLahev=true&gt;&gt;</tw-passagedata><tw-passagedata pid="9" name="Otevru ji" tags="" position="1800,1000" size="100,100">📜 Uvnitř jsi našel starý pergamen se vzkazem:
@@ -380,15 +382,12 @@ U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správ
 
 	
 
-</tw-passagedata><tw-passagedata pid="11" name="RunaDobre" tags="" position="1175,1275" size="100,100">Úspěch!!
-
-&lt;div class=&quot;title-screen&quot;&gt;
+</tw-passagedata><tw-passagedata pid="11" name="RunaDobre" tags="" position="1175,1275" size="100,100">&lt;div class=&quot;title-screen&quot;&gt;
 	&lt;h1&gt;🏆 Vyhrál jsi! 🏆&lt;/h1&gt;
  	&lt;h2&gt;
     Brána hradu se s rachotem otevřela!
     Zachránil ses z útesů a odhalil tajemství hradu.
-    &lt;/h2&gt; 
-    &lt;&lt;button &quot;Hrát znovu&quot;&gt;&gt;
+    &lt;/h2&gt;     &lt;&lt;button &quot;Hlavní obrazovka&quot;&gt;&gt;
     	&lt;&lt;audio &quot;victory&quot; stop&gt;&gt;
 		&lt;&lt;run Engine.restart()&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
@@ -399,8 +398,11 @@ U brány stojí kamenný podstavec s magickou šifrou. Je jasné, že bez správ
 </tw-passagedata><tw-passagedata pid="12" name="Hadani" tags="" position="1050,1075" size="100,100">📜 Starodávný nápis varuje: Když neuhodneš, poraní tě to.
 
 [[🔥 Runa ohně-&gt;RunaSpatne]]
+
 [[☀️ Runa slunce-&gt;RunaSpatne]]
+
 [[💨 Runa vzduchu-&gt;RunaDobre]]
+
 [[🌑 Runa tmy-&gt;RunaSpatne]]
 
 
